@@ -6,9 +6,11 @@
   #include<USBHIDMouse.h>
   #include<Adafruit_MPU6050.h>
   #include<Adafruit_Sensor.h>
-
+  #include <USBHIDKeyboard.h>
+  
   Adafruit_MPU6050 mpu; //we make an object for the blueprint of the MPU6050 and the mouse
   USBHIDMouse mouse;
+  USBHIDKeyboard keyboard;
 
   bool MPU_ACTIVE_TEST = 1; // we set a bool to use to see if the MPU has been activated and working
   float pitch , roll , yaw , MousePosX , MousePosY;
@@ -19,6 +21,8 @@
     Serial.begin(115200);
     USB.begin();
     mouse.begin();
+    keyboard.begin();
+    
     while(!Serial){ //here it checks if ESP is activated and if it isnt it delays for an infinite amount of time which isnt the smartest choice but idrc
       delay(1);
     }
@@ -60,5 +64,8 @@
 
     MousePosX = yaw * mouse_sensitivity; //here we find the position that the mouse needs to turn on the X axis based on how much we turned our head
     MousePosY = -(pitch * mouse_sensitivity); //here we find the position that the mouse needs to turn on the Y axis based on how much we turned our head
+    keyboard.press(HID_KEY_C);
     mouse.move(MousePosX , MousePosY); //after finding the coordinates we move the mouse to those exact positions we previously found
+    delay(10);
+    keyboard.release(HID_KEY_C);
   }
